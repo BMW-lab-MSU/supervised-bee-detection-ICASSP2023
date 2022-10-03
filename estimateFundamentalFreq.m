@@ -24,8 +24,13 @@ else
 end
 
 parfor (i = 1:height(psd), nWorkers)
-    [~, fundamental(i)] = findpeaks(hps(i,:), 'NPeaks', 1, ...
+    [~, fundamentalTmp] = findpeaks(hps(i,:), 'NPeaks', 1, ...
         'SortStr', 'descend');
+    
+    % if we don't find a fundamental frequency, then we keep it set at 0.
+    if ~isempty(fundamentalTmp)
+        fundamental(i) = fundamentalTmp;
+    end
 end
 
 end
