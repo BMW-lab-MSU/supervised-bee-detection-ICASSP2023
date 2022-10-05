@@ -18,9 +18,7 @@ end
 
 MAJORITY_LABEL = 0;
 
-if opts.UseParallel
-    statset('UseParallel', true);
-end
+statset('UseParallel', opts.UseParallel);
 
 crossvalConfusion = zeros(2, 2, crossvalPartition.NumTestSets);
 % losses = nan(1, crossvalPartition.NumTestSets);
