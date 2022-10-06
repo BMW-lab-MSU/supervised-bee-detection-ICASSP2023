@@ -8,7 +8,6 @@ DATA_FILENAME = "adjusted_data_junecal_volts.mat";
 LABELS_FILENAME = "labels.mat";
 
 rawDataDir = "../data/raw";
-combinedDataDir = "../data/raw-combined";
 
 days = ["2022-06-23", "2022-06-24"];
 
@@ -80,5 +79,5 @@ for i = 1:numel(days)
     end
 end
 
-save(combinedDataDir + filesep + "scans", 'scans', '-v7.3');
+save(rawDataDir + filesep + "scans", 'scans', '-v7.3');
 toc
