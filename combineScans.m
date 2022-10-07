@@ -32,9 +32,9 @@ scans = struct('Day', string(), 'Id', string(), 'Data', cell(nScans, 1), ...
     'ScanLabel', false, 'Pan', cell(nScans, 1), ...
     'Tilt', cell(nScans, 1), 'Range', cell(nScans, 1), 'Time', cell(nScans, 1));
 
-if exist('ProgressBar')
-    progbar1 = ProgressBar(nScans, 'UpdateRate', 1);
-end
+% if exist('ProgressBar')
+%     progbar1 = ProgressBar(nScans, 'UpdateRate', 1);
+% end
 
 scanNum = 1;
 for i = 1:numel(days)
@@ -73,9 +73,9 @@ for i = 1:numel(days)
 
         scanNum = scanNum + 1;
 
-        if exist('ProgressBar')
-            progbar1([],[],[])
-        end
+        % if exist('ProgressBar')
+        %     progbar1([],[],[])
+        % end
     end
 end
 
