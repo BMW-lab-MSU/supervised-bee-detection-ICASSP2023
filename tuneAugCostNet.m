@@ -41,7 +41,7 @@ for i = 1:GRID_SIZE
 
     [objective(i), ~, userdata{i}] = cvobjfun(@NNet, hyperparams, undersamplingRatio, ...
         nAugment, crossvalPartition, trainingFeatures, trainingData, trainingLabels, ...
-        scanLabels, 'Progress', true, 'UseParallel', true);
+        imageLabels, 'Progress', true, 'UseParallel', true);
     toc
     disp(append('Iteration number:', int2str(i)))
     disp(objective(i))
