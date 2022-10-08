@@ -44,8 +44,11 @@ else
 end
 timeFeatures = extractTimeDomainFeatures(row_reduced);
 
-% FIXME: why does extractFreqDomainFeatures give an error when using row_reduced?
 freqFeatures = extractFreqDomainFeatures(row_reduced, 'UseParallel', opts.UseParallel);
 tfFeatures = extractTFFeatures(row_reduced, 'UseParallel', opts.UseParallel);
 features = [timeFeatures, freqFeatures, tfFeatures]; % ,tfFeatures
+
+% replace nans with zeros because we don't want the ML algorithms to throw out
+% data points that have a few nan dimensions.
+features = fillmissing(features,'constant',0);
 end
