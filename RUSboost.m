@@ -33,10 +33,13 @@
             tt=templateTree('Reproducible',true,ttHP{:});
         end
 
+	% convert data to gpuArray
+	gpuData = convertvars(data, [1:width(data)], @(x) gpuArray(x));
+
         if isempty(enHP)
-            model=compact(fitcensemble(data,labels,'Method','RUSBoost'));
+            model=compact(fitcensemble(gpuData,labels,'Method','RUSBoost'));
         else
-            model=compact(fitcensemble(data,labels,'Method','RUSBoost',...
+            model=compact(fitcensemble(gpuData,labels,'Method','RUSBoost',...
                 enHP{:}));
         end
     
