@@ -22,7 +22,7 @@ fixedParams.CostRatio=result.CostRatio;    %used to calculate weight vector in c
 fixedParams.Verbose=0;
 fixedParams.Standardize=true;
 
-nObservations = height(nestedcell2mat(trainingFeatures));
+nObservations = height(vertcat(trainingFeatures{:}));
 
 optimizeVars = [
    optimizableVariable('LayerSizes',[10,300], 'Type', 'integer', 'Transform', 'log'),...

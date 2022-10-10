@@ -26,7 +26,7 @@ fixedParams.ClassNames=logical([0,1]);
 fixedParams.SplitCriterion='gdi';
 fixedParams.LearnRate=0.1;
 
-nObservations = height(nestedcell2mat(trainingFeatures));
+nObservations = height(vertcat(trainingFeatures{:}));
 
 optimizeVars = [
    optimizableVariable('NumLearningCycles',[10, 200], 'Type', 'integer', 'Transform','log'),...
