@@ -100,7 +100,7 @@ if opts.Progress
 end
 
 [accuracy, precision, recall, f2, f3, mcc] = analyzeConfusion(sum(crossvalConfusion, 3));
-objective = -f3;
+objective = -mcc;
 
 constraints = [];
 
