@@ -4,9 +4,9 @@ rng(0, 'twister');
 
 datadir = '../data';
 
-% if isempty(gcp('nocreate'))
-%     parpool();
-% end
+if isempty(gcp('nocreate'))
+    parpool('IdleTimeout', Inf);
+end
 
 %% Load data
 load([datadir filesep 'training' filesep 'trainingData.mat']);
