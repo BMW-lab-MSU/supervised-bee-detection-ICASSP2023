@@ -57,7 +57,7 @@ for i = 1:crossvalPartition.NumTestSets
     testingFeatures = vertcat(features{validationSet});
     testingLabels = vertcat(labels{validationSet});
 
-    clear('trainingDataScans', 'trainingLabelScans', 'trainingFeatureScans');
+    clear('trainingDataImages', 'trainingLabelImages', 'trainingFeatureImages');
 
     if nAugment > 0
         % Create synthetic features

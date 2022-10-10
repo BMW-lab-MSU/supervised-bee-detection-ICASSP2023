@@ -41,9 +41,9 @@ for i = 1:crossvalPartition.NumTestSets
     validationSet = test(crossvalPartition, i); 
     trainingSet = training(crossvalPartition, i);
     
-    trainingFeatureScans = features(trainingSet);
-    trainingDataScans = data(trainingSet);
-    trainingLabelScans = labels(trainingSet);
+    trainingFeatureImages = features(trainingSet);
+    trainingDataImages = data(trainingSet);
+    trainingLabelImages = labels(trainingSet);
 
     % Undersample the majority class
     idxRemove = randomUndersample(...
@@ -51,18 +51,18 @@ for i = 1:crossvalPartition.NumTestSets
         'UndersamplingRatio', undersamplingRatio, ...
         'Reproducible', true, 'Seed', i);
     
-    trainingFeatureScans(idxRemove) = [];
-    trainingDataScans(idxRemove) = [];
-    trainingLabelScans(idxRemove) = [];
+    trainingFeatureImages(idxRemove) = [];
+    trainingDataImages(idxRemove) = [];
+    trainingLabelImages(idxRemove) = [];
     
     % Un-nest data out of cell arrays
-    trainingFeatures = nestedcell2mat(trainingFeatureScans);
-    trainingData = nestedcell2mat(trainingDataScans);
-    trainingLabels = nestedcell2mat(trainingLabelScans);
-    testingFeatures = nestedcell2mat(features(validationSet));
-    testingLabels = nestedcell2mat(labels(validationSet));
+    trainingFeatures = vertcat(trainingFeatureImages{:});
+    trainingData = vertcat(trainingDataImages{:});
+    trainingLabels = vertcat(trainingLabelImages{:});
+    testingFeatures = vertcat(features{validationSet});
+    testingLabels = vertcat(labels{validationSet});
 
-    clear('trainingDataScans', 'trainingLabelScans', 'trainingFeatureScans');
+    clear('trainingDataImages', 'trainingLabelImages', 'trainingFeatureImages');
 
     % Create synthetic features
     [synthFeatures, synthLabels] = dataAugmentation(trainingData, ...
