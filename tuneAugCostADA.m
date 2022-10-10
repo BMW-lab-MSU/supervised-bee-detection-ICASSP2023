@@ -4,9 +4,9 @@ rng(0, 'twister');
 
 datadir = '../data';
 
-% if isempty(gcp('nocreate'))
-%     parpool();
-% end
+if isempty(gcp('nocreate'))
+    parpool('IdleTimeout', Inf);
+end
 
 %% Load data
 load([datadir filesep 'training' filesep 'trainingData.mat']);
@@ -42,7 +42,7 @@ for i = 1:GRID_SIZE
 
     [objective(i), ~, userdata{i}] = cvobjfun(@ADAboost, hyperparams, undersamplingRatio, ...
         nAugment, crossvalPartition, trainingFeatures, trainingData, trainingLabels, ...
-        imageLabels, 'Progress', true, 'UseParallel', false);
+        imageLabels, 'Progress', true, 'UseParallel', true);
     toc
     disp(append('Iteration number:', int2str(i)))
     disp(objective(i))
