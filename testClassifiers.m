@@ -2,13 +2,13 @@
 %% Setup
 clear
 
-datadir = '../data/projects/optec2022';
+datadir = '../data';
 
 %% Load data
 load([datadir filesep 'testing' filesep 'testingData.mat']);
 
-features = nestedcell2mat(testingFeatures);
-labels = nestedcell2mat(testingLabels);
+features = vertcat(testingFeatures{:});
+labels = vertcat(testingLabels{:});
 
 
 %% Test AdaBoost
