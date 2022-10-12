@@ -1,25 +1,51 @@
+basedir = '../data';
 %% Load relevant files
-load('C:\Users\v59g786\Desktop\REU_project\code_by_walden\revisedPipeline\data\training3\PSONetaugcost.mat')            %"result"
-load('C:\Users\v59g786\Desktop\REU_project\code_by_walden\revisedPipeline\data\training3\hyperparameterTuningNet.mat')  %"results"
-load('C:\Users\v59g786\Desktop\REU_project\code_by_walden\revisedPipeline\data\training3\trainingData.mat')
+load([basedir filesep 'training' filesep 'augCostTuningNet.mat']);
+load([basedir filesep 'training' filesep 'hyperparameterTuningNet.mat']); 
+load([basedir filesep 'training' filesep 'trainingData']);
+
 %% extract the optimal hyperparameter values
-undersamplingRatio=result.US;
-costRatio=result.costRatio;
+undersamplingRatio=result.undersamplingRatio;
+costRatio=result.CostRatio;
 nAugment=round(result.nAugment);
 LayerSize=bestParams.LayerSizes;
 Lambda=bestParams.Lambda;
 Activations=string(bestParams.activations);
+
 %%  create hyperparameter structure
-hyperparams.CostRatio=costRatio;    %used to calculate weight vector in cvobjfun.m
+hyperparams.CostRatio=costRatio;
 hyperparams.Verbose=1;
 hyperparams.LayerSizes=LayerSize;
 hyperparams.Lambda=Lambda;
 hyperparams.Activations=Activations;
 hyperparams.Standardize=true;
 
-%% train the model
-[objective, ~, userdata] = cvobjfun(@NNet, hyperparams, undersamplingRatio, ...
-        nAugment, crossvalPartition, trainingFeatures, trainingData, trainingLabels, ...
-        imageLabels, 'Progress', false, 'UseParallel', false);
+%% Undersample the majority class
+idxRemove = randomUndersample(...
+    imageLabels(training(holdoutPartition)), 0, ...
+    'UndersamplingRatio', undersamplingRatio, ...
+    'Reproducible', true);
 
-save('C:\Users\v59g786\Desktop\REU_project\code_by_walden\revisedPipeline\data\training3\finalModelNet',"userdata")
+trainingFeatures(idxRemove) = [];
+trainingData(idxRemove) = [];
+trainingLabels(idxRemove) = [];
+
+%% Un-nest data/labels
+data = vertcat(trainingData{:});
+features = vertcat(trainingFeatures{:});
+labels = vertcat(trainingLabels{:});
+
+%% Create synthetic features
+[synthFeatures, synthLabels] = dataAugmentation(data, ...
+    labels, nAugment, 'UseParallel', true);
+
+features = vertcat(features, synthFeatures);
+labels = vertcat(labels, synthLabels);
+clear('synthFeatures', 'synthLabels');
+
+%% train the model
+model = NNet(features, labels, hyperparams);
+
+mkdir([basedir filesep 'training' filesep 'models']);
+save([basedir filesep 'training' filesep 'models' filesep 'NNet.mat'] ,"model")
+

@@ -1,4 +1,4 @@
-basedir = '../data/projects/optec2022';
+basedir = '../data';
 %% Load relevant files
 load([basedir filesep 'training' filesep 'augCostTuningADA']);            %"result"
 load([basedir filesep 'training' filesep 'hyperparameterTuningADA.mat'])  %"results"
@@ -35,9 +35,9 @@ trainingData(idxRemove) = [];
 trainingLabels(idxRemove) = [];
 
 %% Un-nest data/labels
-data = nestedcell2mat(trainingData);
-features = nestedcell2mat(trainingFeatures);
-labels = nestedcell2mat(trainingLabels);
+data = vertcat(trainingData{:});
+features = vertcat(trainingFeatures{:});
+labels = vertcat(trainingLabels{:});
 
 %% Create synthetic features
 [synthFeatures, synthLabels] = dataAugmentation(data, ...
