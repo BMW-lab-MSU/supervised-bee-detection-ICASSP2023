@@ -21,6 +21,7 @@ features = vertcat(scans.Features);
 
 %% Format labels
 labels = vertcat(scans.Labels);
+% TODO: I should save testing and training set image labels
 imageLabels = vertcat(scans.ImageLabels);
 
 %% Partition into training and test sets
