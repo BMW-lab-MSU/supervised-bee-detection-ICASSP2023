@@ -42,8 +42,8 @@ parfor i = 1:crossvalPartition.NumTestSets
         'UndersamplingRatio', hyperparams.UndersamplingRatio, ...
         'Reproducible', true, 'Seed', i);
     
-    trainingDataImages(idxRemove) = [];
-    trainingLabelImages(idxRemove) = [];
+    trainingData(idxRemove) = [];
+    trainingLabels(idxRemove) = [];
     
     % Un-nest data out of cell arrays
     testingData = cat(4, data{validationSet});
