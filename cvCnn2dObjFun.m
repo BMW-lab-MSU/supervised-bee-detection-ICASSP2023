@@ -21,12 +21,6 @@ crossvalConfusion = zeros(2, 2, crossvalPartition.NumTestSets);
 models = cell(1, crossvalPartition.NumTestSets);
 predLabels = cell(1, crossvalPartition.NumTestSets);
 
-if opts.Progress
-    progressbar = ProgressBar(crossvalPartition.NumTestSets, ...
-        'UpdateRate', inf, 'Title', 'Cross validation');
-    progressbar.setup([], [], []);
-end
-
 parfor i = 1:crossvalPartition.NumTestSets
     % Get validation and training partitions
     validationSet = test(crossvalPartition, i); 
@@ -58,14 +52,8 @@ parfor i = 1:crossvalPartition.NumTestSets
     % Compute performance metrics
     crossvalConfusion(:, :, i) = confusionmat(testingLabels, predLabels{i});
 
-    if opts.Progress
-        progressbar([], [], []);
-    end
 end
 
-if opts.Progress
-    progressbar.release();
-end
 
 [accuracy, precision, recall, f2, f3, mcc] = analyzeConfusion(sum(crossvalConfusion, 3));
 objective = -mcc;
