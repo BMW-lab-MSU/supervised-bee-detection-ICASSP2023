@@ -4,9 +4,10 @@ rng(0, 'twister');
 
 datadir = '../data';
 
-% if isempty(gcp('nocreate'))
-%     parpool('IdleTimeout', Inf);
-% end
+if isempty(gcp('nocreate'))
+    numGPUs = gpuDeviceCount("available");
+    parpool(numGPUs, 'IdleTimeout', Inf);
+end
 
 %% Load data
 load([datadir filesep 'training' filesep 'trainingData.mat']);
