@@ -1,4 +1,4 @@
-function [objective, constraints, userdata] = cvCnn2dObjFun(fitcfun, hyperparams, crossvalPartition, data, labels, opts)
+function [objective, constraints, userdata] = cvCnn1dObjFun(fitcfun, hyperparams, crossvalPartition, data, labels, opts)
 % cvobjfun Optimize hyperparameters via cross-validation
 
 % SPDX-License-Identifier: BSD-3-Clause
