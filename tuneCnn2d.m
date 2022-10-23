@@ -31,12 +31,12 @@ for i = 1:GRID_SIZE
 
     hyperparams.UndersamplingRatio = undersamplingRatio;
     hyperparams.CostRatio=costRatio;    %used to calculate weight vector in cvobjfun.m
-    hyperparams.Cost=[0,1;costRatio,0];
+    hyperparams.Cost=[1,costRatio];
 
 
     [objective, ~, userdata] = cvCnn2dObjFun(@fitCnn2d, hyperparams, ...
         crossvalPartition, trainingData, trainingLabels, ...
-        'Progress', true, 'UseParallel', true);
+        'Progress', false, 'UseParallel', true);
 
 end
 
