@@ -15,7 +15,7 @@ load([datadir filesep 'training' filesep 'trainingData.mat'], 'trainingLabels', 
 % trainingLabels = categorical(vertcat(trainingLabels{:}));
 
 waveletFileset = matlab.io.datastore.FileSet([waveletdir filesep 'trainingWaveletMagnitude*.tiff']);
-wavelets = imageDatastore(waveletFileset);
+wavelets = imageDatastore(waveletFileset, 'ReadSize', 128);
 wavelets.Labels = categorical(vertcat(trainingLabels{:}));
 
 
