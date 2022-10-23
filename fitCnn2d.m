@@ -33,7 +33,7 @@ layers = [
     reluLayer
     maxPooling2dLayer(3,Stride=2,Padding="same")
     
-    convolution2dLayer([3 10],2*numF,Padding="same")
+    convolution2dLayer(3,2*numF,Padding="same")
     batchNormalizationLayer
     reluLayer
     maxPooling2dLayer(3,Stride=2,Padding="same")
@@ -51,21 +51,6 @@ layers = [
     batchNormalizationLayer
     reluLayer
 
-    convolution2dLayer(3,4*numF,Padding="same")
-    batchNormalizationLayer
-    reluLayer
-
-    convolution2dLayer(3,5*numF,Padding="same")
-    batchNormalizationLayer
-    reluLayer
-
-    convolution2dLayer(3,6*numF,Padding="same")
-    batchNormalizationLayer
-    reluLayer
-
-    convolution2dLayer(3,4*numF,Padding="same")
-    batchNormalizationLayer
-    reluLayer
     maxPooling2dLayer([23, 128])
     dropoutLayer(dropoutProb)
 
