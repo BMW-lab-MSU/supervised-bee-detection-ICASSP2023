@@ -27,7 +27,7 @@ if opts.Progress
     progressbar.setup([], [], []);
 end
 
-for i = 1:crossvalPartition.NumTestSets
+parfor i = 1:crossvalPartition.NumTestSets
     % Get validation and training partitions
     validationSet = test(crossvalPartition, i); 
     trainingSet = training(crossvalPartition, i);
