@@ -1,4 +1,4 @@
-function model = fitCnn2d(data, hyperparams)
+function model = fitCnn2dWavelets(data, hyperparams)
 arguments
     data (1,1)  
     hyperparams (1,1) struct
@@ -14,9 +14,9 @@ numClasses = numel(classes);
 
 
 dropoutProb = 0.2;
-numF = 24;
+numF = 12;
 layers = [
-    imageInputLayer([71, 1024, 1])
+    imageInputLayer([71, 1024, 1], Normalization='none')
     
     convolution2dLayer(3,numF,Padding="same")
     batchNormalizationLayer
@@ -45,16 +45,17 @@ layers = [
 
     fullyConnectedLayer(numClasses)
     softmaxLayer
-    classificationLayer(Classes=classes,ClassWeights=classWeights)];
+    focalLossLayer];
+    % classificationLayer(Classes=classes,ClassWeights=classWeights)];
 
 miniBatchSize = 128;
 options = trainingOptions("adam", ...
     InitialLearnRate=0.01, ...
-    MaxEpochs=30, ...
+    MaxEpochs=5, ...
     MiniBatchSize=miniBatchSize, ...
     Shuffle="every-epoch", ...
-    Plots="training-progress", ...
+    Plots='training-progress', ...
     Verbose=false);
 
 %%
-net = trainNetwork(data, layers, options);
+model = trainNetwork(data, layers, options);
