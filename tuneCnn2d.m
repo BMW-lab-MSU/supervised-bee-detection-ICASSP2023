@@ -38,7 +38,11 @@ for i = 1:GRID_SIZE
         crossvalPartition, trainingData, trainingLabels, ...
         'Progress', false, 'UseParallel', true);
 
+    progressbar([],[],[]);
+
 end
+
+progressbar.release();
 
 result.objective = objective;
 result.userdata = userdata;
