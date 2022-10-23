@@ -44,5 +44,5 @@ result.objective = objective;
 result.userdata = userdata;
 [~, minIdx] = min(result.objective);
 
-% save([datadir filesep 'training' filesep 'augCostTuningADA.mat'],...
-    % 'result', 'result', '-v7.3');
+save([datadir filesep 'training' filesep 'tuningCNN2d.mat'],...
+    'result', 'result', '-v7.3');
