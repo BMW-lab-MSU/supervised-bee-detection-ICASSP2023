@@ -34,15 +34,16 @@ parfor i = 1:crossvalPartition.NumTestSets
     
     trainingData = data(trainingSet);
     trainingLabels = labels(trainingSet);
+    trainingImageLabels = cellfun(@(c) any(c), trainingLabels);
 
-    % % Undersample the majority class
-    % idxRemove = randomUndersample(...
-    %     imageLabel(trainingSet), MAJORITY_LABEL, ...
-    %     'UndersamplingRatio', undersamplingRatio, ...
-    %     'Reproducible', true, 'Seed', i);
+    % Undersample the majority class
+    idxRemove = randomUndersample(...
+        trainingImageLabels, MAJORITY_LABEL, ...
+        'UndersamplingRatio', hyperparams.UndersamplingRatio, ...
+        'Reproducible', true, 'Seed', i);
     
-    % trainingDataImages(idxRemove) = [];
-    % trainingLabelImages(idxRemove) = [];
+    trainingDataImages(idxRemove) = [];
+    trainingLabelImages(idxRemove) = [];
     
     % Un-nest data out of cell arrays
     testingData = cat(4, data{validationSet});

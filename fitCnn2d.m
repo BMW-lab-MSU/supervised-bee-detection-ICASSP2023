@@ -18,8 +18,6 @@ trainingImageLabels = categorical(cellfun(@(c) any(c), labels, 'UniformOutput',t
 
 %%
 classes = categories(trainingImageLabels);
-classWeights = 1./countcats(trainingImageLabels);
-classWeights = classWeights'/mean(classWeights);
 numClasses = numel(classes);
 
 
@@ -56,8 +54,7 @@ layers = [
 
     fullyConnectedLayer(numClasses)
     softmaxLayer
-    focalLossLayer];
-    % classificationLayer(Classes=classes,ClassWeights=classWeights)];
+    classificationLayer(Classes=classes,ClassWeights=hyperparams.Cost)];
 
 miniBatchSize = 64;
 options = trainingOptions("adam", ...
