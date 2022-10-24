@@ -15,7 +15,7 @@ load([datadir filesep 'training' filesep 'trainingData.mat']);
 
 %% "tune" parameters; for now, just checking if the framework works...
 
-costRatios = logspace(-1,7,9);
+costRatios = logspace(0,2,4);
 
 GRID_SIZE = numel(costRatios);
 
@@ -32,11 +32,17 @@ for i = 1:GRID_SIZE
     hyperparams.UndersamplingRatio = undersamplingRatio;
     hyperparams.CostRatio=costRatio;    %used to calculate weight vector in cvobjfun.m
     hyperparams.Cost=[1,costRatio];
+    hyperparams.Cost = hyperparams.Cost / mean(hyperparams.Cost);
 
 
-    [objective, ~, userdata] = cvCnn2dObjFun(@fitCnn2d, hyperparams, ...
+    [objective(i), ~, userdata{i}] = cvCnn2dObjFun(@fitCnn2dMedium, hyperparams, ...
         crossvalPartition, trainingData, trainingLabels, ...
         'Progress', false, 'UseParallel', true);
+
+    disp('')
+    disp(objective(i))
+    disp('')
+    disp(hyperparams.Cost)
 
     progressbar([],[],[]);
 
@@ -47,6 +53,8 @@ progressbar.release();
 result.objective = objective;
 result.userdata = userdata;
 [~, minIdx] = min(result.objective);
+result.CostRatio = costRatios(minIdx);
+result.UndersamplingRatio = undersamplingRatio;
 
 save([datadir filesep 'training' filesep 'tuningCNN2d.mat'],...
     'result', 'result', '-v7.3');

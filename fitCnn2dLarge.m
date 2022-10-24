@@ -1,4 +1,4 @@
-function model = fitCnn2d(data, labels, hyperparams)
+function model = fitCnn2dLarge(data, labels, hyperparams)
 arguments
     data (:,1) cell 
     labels (:,1) cell 
@@ -41,6 +41,22 @@ layers = [
     reluLayer
     maxPooling2dLayer(3,Stride=2,Padding="same")
     
+    convolution2dLayer(3,4*numF,Padding="same")
+    batchNormalizationLayer
+    reluLayer
+
+    convolution2dLayer(3,4*numF,Padding="same")
+    batchNormalizationLayer
+    reluLayer
+
+    convolution2dLayer(3,4*numF,Padding="same")
+    batchNormalizationLayer
+    reluLayer
+
+    convolution2dLayer(3,4*numF,Padding="same")
+    batchNormalizationLayer
+    reluLayer
+
     convolution2dLayer(3,4*numF,Padding="same")
     batchNormalizationLayer
     reluLayer
