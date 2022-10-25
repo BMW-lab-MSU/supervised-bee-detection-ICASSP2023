@@ -14,8 +14,8 @@ load([datadir filesep 'training' filesep 'trainingData.mat']);
 %% Tune cost and aug ratios
 
 % Create the grid
-costRatios = logspace(-1,7,9);
-augs = round([0,logspace(0,log10(250),5)]);
+costRatios = logspace(0,2,4);
+augs = round([0,logspace(0,log10(100),4)]);
 [cR, nA] = ndgrid(costRatios, augs);
 cR = reshape(cR, 1, numel(cR));
 nA = reshape(nA, 1, numel(nA));
@@ -57,7 +57,7 @@ result.userdata = userdata;
 [~, minIdx] = min(result.objective);
 result.CostRatio = cR(minIdx);
 result.nAugment = nA(minIdx);
-result.undersamplingRatio=undersamplingRatio;
+result.UndersamplingRatio=undersamplingRatio;
 
 save([datadir filesep 'training' filesep 'augCostTuningADA.mat'],...
     'result', 'result', '-v7.3');
