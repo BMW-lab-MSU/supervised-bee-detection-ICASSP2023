@@ -42,11 +42,6 @@ parfor(i = 1:rows, nWorkers)
     max_peak(i) = max(max(cwavelet));
     max_diff(i) = max(max(diff(cwavelet)));
 
-    rc = 0;
-    for j = 0:15
-        rc = rc + sum(sum(cwavelet(:,(64*j + 1 : 64*(j+1)))))/(71*64);
-    end
-    brk_up(i) = rc/16;
 end
 
 features = table;
@@ -56,6 +51,5 @@ features.avg_mean = avg_mean;
 features.avg_skewness = avg_skewness;
 features.max_peak = max_peak;
 features.max_diff = max_diff;
-features.brk_up = brk_up;
 
 end
