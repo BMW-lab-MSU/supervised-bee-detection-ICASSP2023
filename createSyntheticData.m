@@ -15,7 +15,7 @@ end
 N_VARIATIONS = 6;
 
 insectIdx = find(labels == 1);
-nInsects = sum(insectIdx);
+nInsects = numel(insectIdx);
 insectData = data(insectIdx,:);
 
 synthDataCell = cell(nInsects, 1);
