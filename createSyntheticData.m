@@ -1,6 +1,7 @@
 function [synthData,synthLabels] = createSyntheticData(data, nAugmented, opts)
 arguments
     data (:,:) {mustBeNumeric}
+    labels (:, 1) logical
     nAugmented (1,1) {mustBeNumeric, mustBeNonnegative}
     opts.UseParallel (1,1) logical = false
 end
@@ -12,22 +13,25 @@ else
 end
 
 N_VARIATIONS = 6;
-nInsects = height(data);
+
+insectIdx = find(labels == 1);
+nInsects = sum(insectIdx);
+insectData = data(insectIdx,:);
 
 synthDataCell = cell(nInsects, 1);
 
 parfor (i = 1:nInsects, nWorkers)
 
-    synthDataTmp = zeros(nAugmented, width(data), 'like', data);
+    synthDataTmp = zeros(nAugmented, width(insectData), 'like', data);
 
-    insect = data(i,:);
+    insect = insectData(i,:);
 
     stop = 0;
 
     for j = 1:ceil(nAugmented/N_VARIATIONS)
-        variations = zeros(N_VARIATIONS, width(data), 'like', data);
+        variations = zeros(N_VARIATIONS, width(insectData), 'like', data);
 
-        variations(1, :) = circshift(insect, randi(width(data), 1));
+        variations(1, :) = circshift(insect, randi(width(insectData), 1));
         variations(2, :) = fliplr(insect);
         variations(3, :) = interpolate(variations(1, :));
         variations(4, :) = decimate_(variations(1, :));
@@ -36,7 +40,7 @@ parfor (i = 1:nInsects, nWorkers)
 
         % add noise to the variations
         variations = variations + ...
-            randn(N_VARIATIONS, width(data), 'like', data) * ...
+            randn(N_VARIATIONS, width(insectData), 'like', data) * ...
             max(variations, [], 'all')/2;
 
         % the original lidar data is normalized between 0 and 1, so we do the

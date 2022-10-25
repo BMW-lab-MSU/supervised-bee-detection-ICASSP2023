@@ -29,7 +29,6 @@ disp(['single layer NN: cost/aug search'])
 progressbar.setup([],[],[]);
 
 for i = 1:GRID_SIZE
-    tic
     costRatio=cR(i);
     nAugment=nA(i);
     undersamplingRatio=0.3;
@@ -42,8 +41,6 @@ for i = 1:GRID_SIZE
     [objective(i), ~, userdata{i}] = cvobjfun(@NNet, hyperparams, undersamplingRatio, ...
         nAugment, crossvalPartition, trainingFeatures, trainingData, trainingLabels, ...
         imageLabels, 'Progress', true, 'UseParallel', true);
-    toc
-    disp(append('Iteration number:', int2str(i)))
     disp(objective(i))
 
     progressbar([], [], []);
