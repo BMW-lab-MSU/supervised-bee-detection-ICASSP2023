@@ -14,9 +14,8 @@ else
     nWorkers = 0;
 end
 
-insectIdx = find(labels == 1);
 
-synthData = createSyntheticData(data(insectIdx, :), nAugmented, opts);
+synthData = createSyntheticData(data, labels, nAugmented, 'UseParallel', opts.UseParallel);
 
 newFeatures = extractFeatures(synthData, 'UseParallel', opts.UseParallel);
 
