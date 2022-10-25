@@ -29,7 +29,6 @@ disp(['RUSBoost: cost/aug search'])
 progressbar.setup([],[],[]);
 
 for i = 1:GRID_SIZE
-    tic
     costRatio=cR(i);
     nAugment=nA(i);
     undersamplingRatio=0.3;
@@ -43,7 +42,6 @@ for i = 1:GRID_SIZE
     [objective(i), ~, userdata{i}] = cvobjfun(@RUSboost, hyperparams, undersamplingRatio, ...
         nAugment, crossvalPartition, trainingFeatures, trainingData, trainingLabels, ...
         imageLabels, 'Progress', true, 'UseParallel', true);
-    toc
     disp(objective(i))
 
     progressbar([], [], []);
