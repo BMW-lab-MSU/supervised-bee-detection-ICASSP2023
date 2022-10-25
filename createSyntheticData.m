@@ -1,4 +1,4 @@
-function [synthData,synthLabels] = createSyntheticData(data, nAugmented, opts)
+function [synthData,synthLabels] = createSyntheticData(data, labels, nAugmented, opts)
 arguments
     data (:,:) {mustBeNumeric}
     labels (:, 1) logical
