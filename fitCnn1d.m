@@ -16,28 +16,26 @@ trainingLabels = categorical(vertcat(labels{:}));
 
 %%
 classes = categories(trainingLabels);
-classWeights = 1./countcats(trainingLabels);
-classWeights = classWeights'/mean(classWeights);
 numClasses = numel(classes);
 
 %%
-filterSize = 20;
+filterSize = 10;
 numFilters = 20;
 
 layers = [ ...
     sequenceInputLayer(1, MinLength=1024)
-    convolution1dLayer(filterSize/4,numFilters)
+    convolution1dLayer(filterSize,numFilters)
     batchNormalizationLayer
     reluLayer
     dropoutLayer
     convolution1dLayer(filterSize,2*numFilters)
     batchNormalizationLayer
     reluLayer
-    dropoutLayer
+    dropoutLayer(0.2)
     globalMaxPooling1dLayer
     fullyConnectedLayer(numClasses)
     softmaxLayer
-    classificationLayer(Classes=classes,ClassWeights=classWeights)];
+    classificationLayer(Classes=classes,ClassWeights=hyperparams.Cost)];
 
 options = trainingOptions("adam", ...
     MaxEpochs=10, ...
