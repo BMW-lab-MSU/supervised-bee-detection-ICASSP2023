@@ -15,7 +15,7 @@ load([datadir filesep 'training' filesep 'trainingData.mat']);
 
 % Create the grid
 costRatios = logspace(0,2,4);
-augs = round([0,logspace(0,log10(100),4)]);
+augs = round([0,logspace(0,log10(100),3)]);
 [cR, nA] = ndgrid(costRatios, augs);
 cR = reshape(cR, 1, numel(cR));
 nA = reshape(nA, 1, numel(nA));
