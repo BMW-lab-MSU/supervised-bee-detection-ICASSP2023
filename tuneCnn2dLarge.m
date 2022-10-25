@@ -53,5 +53,5 @@ result.userdata = userdata;
 result.CostRatio = costRatios(minIdx);
 result.UndersamplingRatio = undersamplingRatio;
 
-save([datadir filesep 'training' filesep 'tuningCNN2d.mat'],...
+save([datadir filesep 'training' filesep 'tuningCNN2dLarge.mat'],...
     'result', 'result', '-v7.3');
