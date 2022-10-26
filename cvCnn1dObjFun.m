@@ -21,28 +21,34 @@ crossvalConfusion = zeros(2, 2, crossvalPartition.NumTestSets);
 models = cell(1, crossvalPartition.NumTestSets);
 predLabels = cell(1, crossvalPartition.NumTestSets);
 
-if opts.Progress
-    progressbar = ProgressBar(crossvalPartition.NumTestSets, ...
-        'UpdateRate', inf, 'Title', 'Cross validation');
-    progressbar.setup([], [], []);
-end
 
-for i = 1:crossvalPartition.NumTestSets
+parfor i = 1:crossvalPartition.NumTestSets
     % Get validation and training partitions
     validationSet = test(crossvalPartition, i); 
     trainingSet = training(crossvalPartition, i);
     
     trainingData = data(trainingSet);
     trainingLabels = labels(trainingSet);
+    trainingImageLabels = cellfun(@(c) any(c), trainingLabels);
 
-    % % Undersample the majority class
-    % idxRemove = randomUndersample(...
-    %     imageLabel(trainingSet), MAJORITY_LABEL, ...
-    %     'UndersamplingRatio', undersamplingRatio, ...
-    %     'Reproducible', true, 'Seed', i);
+    % Undersample the majority class
+    idxRemove = randomUndersample(...
+        trainingImageLabels, MAJORITY_LABEL, ...
+        'UndersamplingRatio', hyperparams.UndersamplingRatio, ...
+        'Reproducible', true, 'Seed', i);
     
-    % trainingDataImages(idxRemove) = [];
-    % trainingLabelImages(idxRemove) = [];
+    trainingData(idxRemove) = [];
+    trainingLabels(idxRemove) = [];
+
+    % Create synthetic data
+    [synthData, synthLabels] = createSyntheticData(vertcat(trainingData{:}), vertcat(trainingLabels{:}), hyperparams.nAugment);
+    synthData = mat2cell(synthData, ones(height(synthData),1), width(synthData));
+
+    % Format training data and labels
+    trainingData2 = [mat2cell(vertcat(trainingData{:}), ones(178*numel(trainingData),1),1024); synthData];
+    trainingLabels2 = categorical([vertcat(trainingLabels{:}); synthLabels]);
+    
+
     
     % format testing data and labels
     % The data needs to be a cell array where each cell is a row from an image
@@ -51,7 +57,7 @@ for i = 1:crossvalPartition.NumTestSets
     testingLabels = categorical(vertcat(labels{validationSet}));
 
     % Train the model
-    models{i} = fitcfun(trainingData, trainingLabels, hyperparams);
+    models{i} = fitcfun(trainingData2, trainingLabels2, hyperparams);
 
     % Predict labels on the validation set
     predLabels{i} = classify(models{i}, testingData);
@@ -59,14 +65,8 @@ for i = 1:crossvalPartition.NumTestSets
     % Compute performance metrics
     crossvalConfusion(:, :, i) = confusionmat(testingLabels, predLabels{i});
 
-    if opts.Progress
-        progressbar([], [], []);
-    end
 end
 
-if opts.Progress
-    progressbar.release();
-end
 
 [accuracy, precision, recall, f2, f3, mcc] = analyzeConfusion(sum(crossvalConfusion, 3));
 objective = -mcc;
