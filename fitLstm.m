@@ -9,7 +9,7 @@ end
 
 
 %%
-classes = categories(trainingLabels);
+classes = categories(labels);
 numClasses = numel(classes);
 
 %%
@@ -37,4 +37,4 @@ options = trainingOptions("adam", ...
 
 %% Train
 
-model = trainNetwork(trainingData, trainingLabels, layers, options);
+model = trainNetwork(data, labels, layers, options);
