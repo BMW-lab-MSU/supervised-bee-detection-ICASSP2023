@@ -1,23 +1,15 @@
 function model = fitLstm(data, labels, hyperparams)
 arguments
     data (:,1) cell 
-    labels (:,1) cell 
+    labels (:,1) categorical 
     hyperparams (1,1) struct
 end
 
 % SPDX-License-Identifier: BSD-3-Clause
 
-%% Format data
-% The data needs to be a cell array where each cell is a row from an image
-trainingData = mat2cell(vertcat(data{:}), ones(178*numel(data),1), 1024);
-
-% The deep learning toolbox needs categorical labels
-trainingLabels = categorical(vertcat(labels{:}));
 
 %%
 classes = categories(trainingLabels);
-classWeights = 1./countcats(trainingLabels);
-classWeights = classWeights'/mean(classWeights);
 numClasses = numel(classes);
 
 %%
@@ -41,7 +33,7 @@ options = trainingOptions("adam", ...
     SequenceLength=1024, ...
     Verbose=1, ...
     Shuffle="every-epoch",...
-    Plots="training-progress");
+    Plots="none");
 
 %% Train
 
