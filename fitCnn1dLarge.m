@@ -13,7 +13,7 @@ classes = categories(labels);
 numClasses = numel(classes);
 
 %%
-filterSize = 10;
+filterSize = 21;
 numFilters = 20;
 
 layers = [ ...
@@ -22,6 +22,12 @@ layers = [ ...
     batchNormalizationLayer
     reluLayer
     dropoutLayer
+    convolution1dLayer(filterSize,2*numFilters)
+    batchNormalizationLayer
+    reluLayer
+    convolution1dLayer(filterSize,2*numFilters)
+    batchNormalizationLayer
+    reluLayer
     convolution1dLayer(filterSize,2*numFilters)
     batchNormalizationLayer
     reluLayer
