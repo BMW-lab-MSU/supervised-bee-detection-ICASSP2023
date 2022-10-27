@@ -1,24 +1,20 @@
 basedir = '../data';
 %% Load relevant files
-load([basedir filesep 'training' filesep 'augCostTuningNet.mat']);
-load([basedir filesep 'training' filesep 'hyperparameterTuningNet.mat']); 
+load([basedir filesep 'training' filesep 'augCostTuningRUS']);            %"result"
 load([basedir filesep 'training' filesep 'trainingData']);
 
 %% extract the optimal hyperparameter values
-undersamplingRatio=result.undersamplingRatio;
+undersamplingRatio=result.UndersamplingRatio;
 costRatio=result.CostRatio;
 nAugment=round(result.nAugment);
-LayerSize=bestParams.LayerSizes;
-Lambda=bestParams.Lambda;
-Activations=string(bestParams.activations);
 
-%%  create hyperparameter structure
-hyperparams.CostRatio=costRatio;
-hyperparams.Verbose=1;
-hyperparams.LayerSizes=LayerSize;
-hyperparams.Lambda=Lambda;
-hyperparams.Activations=Activations;
-hyperparams.Standardize=true;
+%% create hyperparameter structure
+hyperparams=struct();
+hyperparams.ScoreTransform='doublelogit';
+hyperparams.Cost=[0,1;costRatio,0];
+hyperparams.ClassNames=logical([0,1]);
+hyperparams.SplitCriterion='gdi';
+hyperparams.LearnRate=0.1;
 
 %% Undersample the majority class
 idxRemove = randomUndersample(...
@@ -44,8 +40,7 @@ labels = vertcat(labels, synthLabels);
 clear('synthFeatures', 'synthLabels');
 
 %% train the model
-model = NNet(features, labels, hyperparams);
+model = RUSboost(features, labels, hyperparams);
 
 mkdir([basedir filesep 'training' filesep 'models']);
-save([basedir filesep 'training' filesep 'models' filesep 'NNet.mat'] ,"model")
-
+save([basedir filesep 'training' filesep 'models' filesep 'RUSBoost.mat'] ,"model")

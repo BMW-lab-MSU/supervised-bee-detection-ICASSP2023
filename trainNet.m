@@ -1,23 +1,19 @@
-% SPDX-License-Identifier: BSD-3-Clause
-%% Setup
-rng(0, 'twister');
+basedir = '../data';
+%% Load relevant files
+load([basedir filesep 'training' filesep 'augCostTuningNet.mat']);
+load([basedir filesep 'training' filesep 'trainingData']);
 
-datadir = '../data/insect-lidar';
+%% extract the optimal hyperparameter values
+undersamplingRatio=result.UndersamplingRatio;
+costRatio=result.CostRatio;
+nAugment=round(result.nAugment);
 
-if isempty(gcp('nocreate'))
-	parpool();
-end
-statset('UseParallel', true);
-
-%% Load data
-load([datadir filesep 'training' filesep 'trainingData.mat']);
-
-load([datadir filesep 'training' filesep 'samplingTuningNet'])
-load([datadir filesep 'training' filesep 'hyperparameterTuningNet'], 'bestParams')
-undersamplingRatio = result.undersamplingRatio
-nAugment = result.nAugment
-params = bestParams
-clear result
+%%  create hyperparameter structure
+hyperparams.CostRatio=costRatio;
+hyperparams.Standardize=true;
+hyperparams.Verbose=0;
+hyperparams.LayerSizes=[100];
+hyperparams.Standardize=true;
 
 %% Undersample the majority class
 idxRemove = randomUndersample(...
@@ -30,9 +26,9 @@ trainingData(idxRemove) = [];
 trainingLabels(idxRemove) = [];
 
 %% Un-nest data/labels
-data = nestedcell2mat(trainingData);
-features = nestedcell2mat(trainingFeatures);
-labels = nestedcell2mat(trainingLabels);
+data = vertcat(trainingData{:});
+features = vertcat(trainingFeatures{:});
+labels = vertcat(trainingLabels{:});
 
 %% Create synthetic features
 [synthFeatures, synthLabels] = dataAugmentation(data, ...
@@ -42,16 +38,9 @@ features = vertcat(features, synthFeatures);
 labels = vertcat(labels, synthLabels);
 clear('synthFeatures', 'synthLabels');
 
-%% Train the model
-model = nnet(features, labels, params);
+%% train the model
+model = NNet(features, labels, hyperparams);
 
-mkdir([datadir filesep 'training' filesep 'models']);
-save([datadir filesep 'training' filesep 'models' filesep 'nnet'], 'model');
+mkdir([basedir filesep 'training' filesep 'models']);
+save([basedir filesep 'training' filesep 'models' filesep 'NNet.mat'] ,"model")
 
-%% Model fitting function
-function model = nnet(data, labels, params)
-    model = compact(fitcnet(data, labels, 'Standardize', true, ...
-        'LayerSizes', params.LayerSizes, ...
-        'Activations', char(params.activations), ...
-        'Lambda', params.Lambda));
-end
