@@ -1,4 +1,4 @@
-function model = fitCnn1d(data, labels, hyperparams)
+function model = fitCnn1dSmall(data, labels, hyperparams)
 arguments
     data (:,1) cell 
     labels (:,1) categorical 
